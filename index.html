@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloud Inventory Management System</title>
+<title>Smart Inventory Dashboard</title>
 
 <style>
 *{
@@ -16,16 +16,14 @@ font-family:Arial, Helvetica, sans-serif;
 body{
 background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
 padding:30px;
 }
 
 .container{
-width:950px;
-background:white;
-border-radius:16px;
+max-width:1200px;
+margin:auto;
+background:#fff;
+border-radius:18px;
 padding:30px;
 box-shadow:0 15px 35px rgba(0,0,0,0.25);
 }
@@ -35,6 +33,34 @@ text-align:center;
 color:#203a43;
 margin-bottom:25px;
 }
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-bottom:30px;
+}
+
+.card{
+padding:20px;
+border-radius:14px;
+color:white;
+font-weight:bold;
+font-size:18px;
+text-align:center;
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card span{
+display:block;
+font-size:28px;
+margin-top:10px;
+}
+
+.c1{background:#3498db;}
+.c2{background:#27ae60;}
+.c3{background:#e67e22;}
+.c4{background:#9b59b6;}
 
 .form-box{
 display:grid;
@@ -80,18 +106,17 @@ padding:8px 12px;
 margin-right:5px;
 }
 
-.edit-btn:hover{
-background:#d68910;
-}
-
 .delete-btn{
 background:#e74c3c;
 color:white;
 padding:8px 12px;
 }
 
-.delete-btn:hover{
-background:#c0392b;
+.sell-btn{
+background:#27ae60;
+color:white;
+padding:8px 12px;
+margin-right:5px;
 }
 
 table{
@@ -116,19 +141,15 @@ tr:hover{
 background:#f4f8fb;
 }
 
-.summary{
-display:flex;
-justify-content:space-between;
-margin-top:20px;
-font-weight:bold;
-color:#203a43;
+.low-stock{
+background:#ffe5e5 !important;
 }
 
 .footer{
-margin-top:20px;
+margin-top:25px;
 text-align:center;
-font-size:14px;
 color:gray;
+font-size:14px;
 }
 </style>
 </head>
@@ -137,7 +158,14 @@ color:gray;
 
 <div class="container">
 
-<h1>Cloud Inventory Management System</h1>
+<h1>Smart Inventory Management Dashboard</h1>
+
+<div class="dashboard">
+<div class="card c1">Total Products <span id="products">0</span></div>
+<div class="card c2">Stock Value ₹ <span id="value">0</span></div>
+<div class="card c3">Low Stock <span id="low">0</span></div>
+<div class="card c4">Items Sold <span id="sold">0</span></div>
+</div>
 
 <div class="form-box">
 <input type="text" id="name" placeholder="Product Name">
@@ -150,34 +178,30 @@ color:gray;
 <thead>
 <tr>
 <th>Product</th>
-<th>Price (₹)</th>
-<th>Quantity</th>
-<th>Total (₹)</th>
+<th>Price ₹</th>
+<th>Qty</th>
+<th>Total ₹</th>
+<th>Status</th>
 <th>Action</th>
 </tr>
 </thead>
-
-<tbody>
-</tbody>
+<tbody></tbody>
 </table>
 
-<div class="summary">
-<span id="items">Total Items: 0</span>
-<span id="stock">Total Stock Value: ₹0</span>
-</div>
-
 <div class="footer">
-Dynamic Inventory Project using HTML, CSS & JavaScript | Ready for Vercel
+Advanced Dynamic Project using HTML, CSS & JavaScript | Ready for Vercel
 </div>
 
 </div>
 
 <script>
+let soldItems = 0;
+
 function addProduct()
 {
-let name = document.getElementById("name").value.trim();
-let price = document.getElementById("price").value;
-let qty = document.getElementById("qty").value;
+let name=document.getElementById("name").value.trim();
+let price=document.getElementById("price").value;
+let qty=document.getElementById("qty").value;
 
 if(name=="" || price=="" || qty=="")
 {
@@ -185,62 +209,108 @@ alert("Please fill all fields");
 return;
 }
 
-let total = price * qty;
+let total=price*qty;
+let status=qty<=5 ? "Low Stock" : "Available";
 
-let tbody = document.querySelector("#inventoryTable tbody");
-let row = tbody.insertRow();
+let tbody=document.querySelector("#inventoryTable tbody");
+let row=tbody.insertRow();
 
-row.innerHTML =
-"<td>" + name + "</td>" +
-"<td>" + price + "</td>" +
-"<td>" + qty + "</td>" +
-"<td>" + total + "</td>" +
-"<td>" +
-"<button class='edit-btn' onclick='editRow(this)'>Edit</button>" +
-"<button class='delete-btn' onclick='deleteRow(this)'>Delete</button>" +
+if(qty<=5)
+row.classList.add("low-stock");
+
+row.innerHTML=
+"<td>"+name+"</td>"+
+"<td>"+price+"</td>"+
+"<td>"+qty+"</td>"+
+"<td>"+total+"</td>"+
+"<td>"+status+"</td>"+
+"<td>"+
+"<button class='sell-btn' onclick='sellItem(this)'>Sell</button>"+
+"<button class='edit-btn' onclick='editRow(this)'>Edit</button>"+
+"<button class='delete-btn' onclick='deleteRow(this)'>Delete</button>"+
 "</td>";
 
-document.getElementById("name").value = "";
-document.getElementById("price").value = "";
-document.getElementById("qty").value = "";
+document.getElementById("name").value="";
+document.getElementById("price").value="";
+document.getElementById("qty").value="";
 
-updateSummary();
+updateDashboard();
 }
 
 function deleteRow(btn)
 {
-let row = btn.parentNode.parentNode;
-row.remove();
-updateSummary();
+btn.parentNode.parentNode.remove();
+updateDashboard();
 }
 
 function editRow(btn)
 {
-let row = btn.parentNode.parentNode;
+let row=btn.parentNode.parentNode;
 
-document.getElementById("name").value = row.cells[0].innerHTML;
-document.getElementById("price").value = row.cells[1].innerHTML;
-document.getElementById("qty").value = row.cells[2].innerHTML;
+document.getElementById("name").value=row.cells[0].innerHTML;
+document.getElementById("price").value=row.cells[1].innerHTML;
+document.getElementById("qty").value=row.cells[2].innerHTML;
 
 row.remove();
-
-updateSummary();
+updateDashboard();
 }
 
-function updateSummary()
+function sellItem(btn)
 {
-let rows = document.querySelectorAll("#inventoryTable tbody tr");
+let row=btn.parentNode.parentNode;
+let qtyCell=row.cells[2];
+let price=row.cells[1].innerHTML;
 
-let itemCount = rows.length;
-let stockValue = 0;
+let qty=parseInt(qtyCell.innerHTML);
+
+if(qty>0)
+{
+qty--;
+soldItems++;
+
+qtyCell.innerHTML=qty;
+row.cells[3].innerHTML=qty*price;
+
+if(qty<=5)
+{
+row.cells[4].innerHTML="Low Stock";
+row.classList.add("low-stock");
+}
+else
+{
+row.cells[4].innerHTML="Available";
+row.classList.remove("low-stock");
+}
+
+if(qty==0)
+{
+row.cells[4].innerHTML="Out of Stock";
+}
+
+updateDashboard();
+}
+}
+
+function updateDashboard()
+{
+let rows=document.querySelectorAll("#inventoryTable tbody tr");
+
+let products=rows.length;
+let totalValue=0;
+let lowStock=0;
 
 rows.forEach(function(row)
 {
-stockValue += Number(row.cells[3].innerHTML);
+totalValue+=Number(row.cells[3].innerHTML);
+
+if(Number(row.cells[2].innerHTML)<=5)
+lowStock++;
 });
 
-document.getElementById("items").innerHTML = "Total Items: " + itemCount;
-document.getElementById("stock").innerHTML = "Total Stock Value: ₹" + stockValue;
+document.getElementById("products").innerHTML=products;
+document.getElementById("value").innerHTML=totalValue;
+document.getElementById("low").innerHTML=lowStock;
+document.getElementById("sold").innerHTML=soldItems;
 }
 </script>
 
