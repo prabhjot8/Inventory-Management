@@ -1,242 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inventory Management System</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Inventory Management System</title>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, Helvetica, sans-serif;
-      }
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
 
-      body {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 30px;
-      }
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:30px;
+}
 
-      .container {
-        width: 950px;
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-      }
+.container{
+width:950px;
+background:white;
+border-radius:16px;
+padding:30px;
+box-shadow:0 15px 35px rgba(0,0,0,0.25);
+}
 
-      h1 {
-        text-align: center;
-        color: #203a43;
-        margin-bottom: 25px;
-      }
+h1{
+text-align:center;
+color:#203a43;
+margin-bottom:25px;
+}
 
-      .form-box {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr auto;
-        gap: 15px;
-        margin-bottom: 25px;
-      }
+.form-box{
+display:grid;
+grid-template-columns:2fr 1fr 1fr auto;
+gap:15px;
+margin-bottom:25px;
+}
 
-      input {
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 15px;
-      }
+input{
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:15px;
+}
 
-      input:focus {
-        outline: none;
-        border-color: #203a43;
-      }
+input:focus{
+outline:none;
+border-color:#203a43;
+}
 
-      button {
-        padding: 12px 18px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: 0.3s;
-      }
+button{
+padding:12px 18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
 
-      .add-btn {
-        background: #203a43;
-        color: white;
-      }
+.add-btn{
+background:#203a43;
+color:white;
+}
 
-      .add-btn:hover {
-        background: #162a30;
-      }
+.add-btn:hover{
+background:#162a30;
+}
 
-      .edit-btn {
-        background: #f39c12;
-        color: white;
-        padding: 8px 12px;
-      }
+.edit-btn{
+background:#f39c12;
+color:white;
+padding:8px 12px;
+margin-right:5px;
+}
 
-      .delete-btn {
-        background: #e74c3c;
-        color: white;
-        padding: 8px 12px;
-      }
+.edit-btn:hover{
+background:#d68910;
+}
 
-      .edit-btn:hover {
-        background: #d68910;
-      }
+.delete-btn{
+background:#e74c3c;
+color:white;
+padding:8px 12px;
+}
 
-      .delete-btn:hover {
-        background: #c0392b;
-      }
+.delete-btn:hover{
+background:#c0392b;
+}
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-      }
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
 
-      th {
-        background: #203a43;
-        color: white;
-        padding: 14px;
-      }
+th{
+background:#203a43;
+color:white;
+padding:14px;
+}
 
-      td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
+td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
 
-      tr:hover {
-        background: #f4f8fb;
-      }
+tr:hover{
+background:#f4f8fb;
+}
 
-      .summary {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-        font-weight: bold;
-        color: #203a43;
-      }
+.summary{
+display:flex;
+justify-content:space-between;
+margin-top:20px;
+font-weight:bold;
+color:#203a43;
+}
 
-      .footer {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 14px;
-        color: gray;
-      }
-    </style>
-  </head>
+.footer{
+margin-top:20px;
+text-align:center;
+font-size:14px;
+color:gray;
+}
+</style>
+</head>
 
-  <body>
-    <div class="container">
-      <h1>Inventory Management System</h1>
+<body>
 
-      <div class="form-box">
-        <input type="text" id="name" placeholder="Product Name" />
-        <input type="number" id="price" placeholder="Price" />
-        <input type="number" id="qty" placeholder="Quantity" />
-        <button class="add-btn" onclick="addProduct()">Add Product</button>
-      </div>
+<div class="container">
 
-      <table id="inventoryTable">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Price (₹)</th>
-            <th>Quantity</th>
-            <th>Total (₹)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+<h1>Cloud Inventory Management System</h1>
 
-      <div class="summary">
-        <span id="items">Total Items: 0</span>
-        <span id="stock">Total Stock Value: ₹0</span>
-      </div>
+<div class="form-box">
+<input type="text" id="name" placeholder="Product Name">
+<input type="number" id="price" placeholder="Price">
+<input type="number" id="qty" placeholder="Quantity">
+<button class="add-btn" onclick="addProduct()">Add Product</button>
+</div>
 
-      <div class="footer">
-        <!-- Dynamic Project using HTML, CSS & JavaScript | Ready for Vercel
-        Deployment -->
-      </div>
-    </div>
+<table id="inventoryTable">
+<thead>
+<tr>
+<th>Product</th>
+<th>Price (₹)</th>
+<th>Quantity</th>
+<th>Total (₹)</th>
+<th>Action</th>
+</tr>
+</thead>
 
-    <script>
-      let totalItems = 0;
+<tbody>
+</tbody>
+</table>
 
-      function addProduct() {
-        let name = document.getElementById("name").value.trim();
-        let price = document.getElementById("price").value;
-        let qty = document.getElementById("qty").value;
+<div class="summary">
+<span id="items">Total Items: 0</span>
+<span id="stock">Total Stock Value: ₹0</span>
+</div>
 
-        if (name == "" || price == "" || qty == "") {
-          alert("Please fill all fields");
-          return;
-        }
+<div class="footer">
+Dynamic Inventory Project using HTML, CSS & JavaScript | Ready for Vercel
+</div>
 
-        let total = price * qty;
+</div>
 
-        let tbody = document.querySelector("#inventoryTable tbody");
-        let row = tbody.insertRow();
+<script>
+function addProduct()
+{
+let name = document.getElementById("name").value.trim();
+let price = document.getElementById("price").value;
+let qty = document.getElementById("qty").value;
 
-        row.insertCell(0).innerHTML = name;
-        row.insertCell(1).innerHTML = price;
-        row.insertCell(2).innerHTML = qty;
-        row.insertCell(3).innerHTML = total;
+if(name=="" || price=="" || qty=="")
+{
+alert("Please fill all fields");
+return;
+}
 
-        row.insertCell(4).innerHTML =
-          '<button class="edit-btn" onclick="editRow(this)">Edit</button> ' +
-          '<button class="delete-btn" onclick="deleteRow(this)">Delete</button>';
+let total = price * qty;
 
-        document.getElementById("name").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("qty").value = "";
+let tbody = document.querySelector("#inventoryTable tbody");
+let row = tbody.insertRow();
 
-        updateSummary();
-      }
+row.innerHTML =
+"<td>" + name + "</td>" +
+"<td>" + price + "</td>" +
+"<td>" + qty + "</td>" +
+"<td>" + total + "</td>" +
+"<td>" +
+"<button class='edit-btn' onclick='editRow(this)'>Edit</button>" +
+"<button class='delete-btn' onclick='deleteRow(this)'>Delete</button>" +
+"</td>";
 
-      function deleteRow(btn) {
-        let row = btn.parentNode.parentNode;
-        row.remove();
-        updateSummary();
-      }
+document.getElementById("name").value = "";
+document.getElementById("price").value = "";
+document.getElementById("qty").value = "";
 
-      function editRow(btn) {
-        let row = btn.parentNode.parentNode;
+updateSummary();
+}
 
-        let name = row.cells[0].innerHTML;
-        let price = row.cells[1].innerHTML;
-        let qty = row.cells[2].innerHTML;
+function deleteRow(btn)
+{
+let row = btn.parentNode.parentNode;
+row.remove();
+updateSummary();
+}
 
-        document.getElementById("name").value = name;
-        document.getElementById("price").value = price;
-        document.getElementById("qty").value = qty;
+function editRow(btn)
+{
+let row = btn.parentNode.parentNode;
 
-        row.remove();
-        updateSummary();
-      }
+document.getElementById("name").value = row.cells[0].innerHTML;
+document.getElementById("price").value = row.cells[1].innerHTML;
+document.getElementById("qty").value = row.cells[2].innerHTML;
 
-      function updateSummary() {
-        let rows = document.querySelectorAll("#inventoryTable tbody tr");
+row.remove();
 
-        let itemCount = rows.length;
-        let stockValue = 0;
+updateSummary();
+}
 
-        rows.forEach((row) => {
-          stockValue += Number(row.cells[3].innerHTML);
-        });
+function updateSummary()
+{
+let rows = document.querySelectorAll("#inventoryTable tbody tr");
 
-        document.getElementById("items").innerHTML =
-          "Total Items: " + itemCount;
-        document.getElementById("stock").innerHTML =
-          "Total Stock Value: ₹" + stockValue;
-      }
-    </script>
-  </body>
+let itemCount = rows.length;
+let stockValue = 0;
+
+rows.forEach(function(row)
+{
+stockValue += Number(row.cells[3].innerHTML);
+});
+
+document.getElementById("items").innerHTML = "Total Items: " + itemCount;
+document.getElementById("stock").innerHTML = "Total Stock Value: ₹" + stockValue;
+}
+</script>
+
+</body>
 </html>
